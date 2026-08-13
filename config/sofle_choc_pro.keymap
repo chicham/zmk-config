@@ -63,15 +63,16 @@
       display-name = "NUM";
       // Ported from Voyager layer 1 (numbers row + symbols).
       // ------------------------------------------------------------------------------------------------------------
-      // |      |      |  [   |  ]   |  7   |  8   |                    |  ^   |  [   |  ]   |  7   |  8   |  9   |
+      // |      |      |  [   |  ]   |  7   |  8   |                    |      |  [   |  ]   |  7   |  8   |  9   |
       // |      |      |      |      |      |      |                    |  -   |  <   |  >   |  4   |  5   |  6   |
-      // |      |      |  Ù   |      |      |      |                    |  Ç   |  |   |  &   |  1   |  2   |  3   |
+      // |      |      |  Ù   |      |      |      |                    |      |  |   |  &   |  1   |  2   |  3   |
       // |      |      |      |      |      |      |       |  |         |  ;   |  :   |  #   |  ~   |  0   |      |
       //               |      |      |      |      |       |  |         |      |      |      |      |
+      // ^ and ç removed — both now live on BASE directly (no longer duplicated).
       bindings = <
-        &trans &trans &trans     &trans &trans &trans                                     &kp FR_CARET &kp FR_LBKT &kp FR_RBKT &kp FR_N7    &kp FR_N8    &kp FR_N9
+        &trans &trans &trans     &trans &trans &trans                                     &trans       &kp FR_LBKT &kp FR_RBKT &kp FR_N7    &kp FR_N8    &kp FR_N9
         &trans &trans &trans     &trans &trans &trans                                     &kp FR_MINUS &kp FR_LT   &kp FR_GT   &kp FR_N4    &kp FR_N5    &kp FR_N6
-        &trans &trans &kp FR_U_GRAVE &trans &trans &trans                                 &kp FR_C_CEDILLA &kp FR_PIPE &kp FR_AMPERSAND &kp FR_N1 &kp FR_N2 &kp FR_N3
+        &trans &trans &kp FR_U_GRAVE &trans &trans &trans                                 &trans           &kp FR_PIPE &kp FR_AMPERSAND &kp FR_N1 &kp FR_N2 &kp FR_N3
         &trans &trans &trans     &trans &trans &trans     &trans &trans                   &kp FR_SEMI &kp FR_COLON &kp FR_HASH &kp FR_TILDE &kp FR_N0 &trans
         &trans &trans      &trans    &trans     &trans &trans  &trans    &trans   &trans    &trans
       >;
@@ -85,13 +86,14 @@
       // ------------------------------------------------------------------------------------------------------------
       // |  +   |  -   |  /   |  *   |  =   |  %   |                    |      |      | BRI-  | BRI+ |      | INS  |
       // |      |  $   |  "   |  (   |  )   |  @   |                    |      |      |       |      |      |      |
-      // |      |      |  _   |  ¨   |  `   |  '   |                    |      |      |       |      |      |      |
+      // |      |      |  _   |  ¨   |  `   |      |                    |      |      |       |      |      |      |
       // |      |  /   |  \   |  {   |  }   | RALT+SPC |     |  |       |      |      |       |      |      |      |
       //               |      |      |      |      |         |  |      | LEFT | DOWN |  UP   | RIGHT|
+      // ' removed — now lives on BASE directly (no longer duplicated).
       bindings = <
         &kp FR_PLUS &kp FR_MINUS &kp FR_FSLH &kp FR_ASTRK &kp FR_EQUAL &kp FR_PERCENT                                          &trans &trans &rgb_ug RGB_BRD &rgb_ug RGB_BRI &trans &kp INS
         &trans      &kp FR_DOLLAR &kp FR_DOUBLE_QUOTES &kp FR_LPAR &kp FR_RPAR &kp FR_AT                                       &trans &trans &trans          &trans          &trans &trans
-        &trans      &trans       &kp FR_UNDERSCORE &kp FR_UMLAUT &kp FR_GRAVE &kp FR_APOSTROPHE                               &trans &trans &trans          &trans          &trans &trans
+        &trans      &trans       &kp FR_UNDERSCORE &kp FR_UMLAUT &kp FR_GRAVE &trans                                          &trans &trans &trans          &trans          &trans &trans
         &trans      &kp FR_FSLH  &kp FR_BSLH &kp FR_LBRC &kp FR_RBRC &kp RA(SPACE)     &trans &trans                          &trans &trans &trans          &trans          &trans &trans
                                   &trans      &trans      &trans      &trans            &trans &trans                        &kp LEFT &kp DOWN &kp UP &kp RIGHT
       >;
@@ -101,15 +103,15 @@
 
     adjust_layer {
       // ----------------------------------------------------------------------------------------------------------------------------
-      // | BTCLR  |  BT1    |  BT2    |   BT3   |   BT4   |   BT5   |                  |      |      |       |      |       |       |
-      // | EXTPWR | RGB_HUD | RGB_HUI | RGB_SAD | RGB_SAI | RGB_EFF |                  |      |      |       |      |       |       |
+      // | BTCLR  |  BT1    |  BT2    |   BT3   |   BT4   |   BT5   |                  |  F1  |  F2  |  F3   |  F4  |  F5   |  F6   |
+      // | EXTPWR | RGB_HUD | RGB_HUI | RGB_SAD | RGB_SAI | RGB_EFF |                  |  F7  |  F8  |  F9   | F10  | F11   | F12   |
       // |        | RGB_BRD | RGB_BRI |         |         |         |                  |      |      |       | STUD |       |       |
       // |        |         |         |         |         |         | RGB_TOG | |      |      |      |       |      |       |       |
       //                    |         |         |         |         |         | |      |      |      |       |      |
       display-name = "ADJUST";
       bindings = <
-        &bt BT_CLR        &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4                            &none &none &none &none &none &none
-        &ext_power EP_TOG &rgb_ug RGB_HUD &rgb_ug RGB_HUI &rgb_ug RGB_SAD &rgb_ug RGB_SAI &rgb_ug RGB_EFF                         &none &none &none &none &none &none
+        &bt BT_CLR        &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4                            &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6
+        &ext_power EP_TOG &rgb_ug RGB_HUD &rgb_ug RGB_HUI &rgb_ug RGB_SAD &rgb_ug RGB_SAI &rgb_ug RGB_EFF                         &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
         &none             &rgb_ug RGB_BRD &rgb_ug RGB_BRI &none           &none           &none                                   &none &none &none &studio_unlock &none &none
         &none             &none           &none           &none           &none           &none            &rgb_ug RGB_TOG &none  &none &none &none &none &none &none
         &none           &none           &none           &none            &none           &none  &none &none &none &none
