@@ -35,23 +35,24 @@
       // BEPO letters over the French-PC (AZERTY) HID mapping — same trick the
       // Voyager QMK config used with FR_* keycodes, ported to zmk-locales' FR_* macros.
       // ------------------------------------------------------------------------------------------------------------
-      // |  /   |  \   |  [   |  ]   |  (   |  )   |                    |   ?  |   !   |   ^   |      |       | BSPC |
+      // |  /   |  \   |  [   |  ]   |  (   |  )   |                    |   ^  |   !   |   ?   |      |       | BSPC |
       // | ESC  |  B   |  É   |  P   |  O   |  È   |                    |   V  |  D    |  L    |  J    |  Z    |  W   |
       // |  TAB  |  A   |  U   |  I   |  E   |  ,   |                    |   C  |  T    |  S    |  R    |  N    |  M   |
-      // |       |  À   |  Y   |  X   |  .   |  K   | LOWER |  | RAISE  |   '  |  Q    |  G    |  H    |  F    |      |
+      // |       |  À   |  Y   |  X   |  .   |  K   | LOWER |  | RAISE  |   '  |  Q    |  G    |  H    |  F    |  Ç   |
       //               | SHFT | CTRL | ALT   |  GUI  |  SPC  |  |  ENTER   | GUI  | ALT  | CTRL | SHFT|
       // Reconciled with BÉPO: comma back on the home row (was ;, now on NUM
       // instead), v/d/l/j/z/w restored to row 2 in BÉPO order, ' moved next
       // to q (row 4, in the slot w vacated), circumflex dead-key (^, for
       // ê/â/î/ô/û) added to row 1 — true single-key ê isn't possible over
       // AZERTY/French-PC without switching macOS to a real BÉPO input source.
+      // ç added to the last empty row-4 key (R4C6, right).
       // ESC stays put; SHIFT/CTRL moved off the main grid onto the thumb row.
       // LOWER/RAISE live on the two extra row-4 keys below each screen.
       bindings = <
-        &kp FR_FSLH &kp FR_BSLH    &kp FR_LBKT &kp FR_RBKT &kp FR_LPAR &kp FR_RPAR                       &kp FR_QMARK &kp FR_EXCL &kp FR_CARET &none     &none      &kp BSPC
+        &kp FR_FSLH &kp FR_BSLH    &kp FR_LBKT &kp FR_RBKT &kp FR_LPAR &kp FR_RPAR                       &kp FR_CARET &kp FR_EXCL &kp FR_QMARK &none     &none      &kp BSPC
         &kp ESC     &kp B          &kp FR_E_ACUTE &kp P    &kp O       &kp FR_E_GRAVE                    &kp V        &kp D    &kp L     &kp J     &kp FR_Z  &kp FR_W
         &kp TAB     &kp FR_A       &kp U       &kp I       &kp E       &kp FR_COMMA                      &kp C        &kp T    &kp S     &kp R     &kp N     &kp FR_M
-        &none       &kp FR_A_GRAVE &kp Y       &kp X       &kp FR_DOT  &kp K       &mo LOWER  &mo RAISE  &kp FR_APOSTROPHE &kp FR_Q &kp G &kp H     &kp F     &none
+        &none       &kp FR_A_GRAVE &kp Y       &kp X       &kp FR_DOT  &kp K       &mo LOWER  &mo RAISE  &kp FR_APOSTROPHE &kp FR_Q &kp G &kp H     &kp F     &kp FR_C_CEDILLA
         &kp LSHFT &kp LCTRL &kp LALT &kp LGUI &kp SPACE     &kp RET &kp RGUI &kp RALT &kp RCTRL &kp RSHFT
       >;
 
