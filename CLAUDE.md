@@ -13,6 +13,9 @@ config, reconciled against the official BÉPO 1.1 standard (NF Z71-300).
   the `FR_*` AZERTY keycodes (`#include <locale/keys_fr.h>`).
 - `boards/shields/rgb_layer_color/` — custom local shield: recolors the RGB
   underglow strip based on the active layer. See "RGB per layer" below.
+- `boards/shields/nice_view_disp/` — display hardware **and** the custom
+  status screen (Keebart's own fork of ZMK's nice!view canvas widgets, not
+  stock ZMK's simple built-in labels). See "Status screens" below.
 - `build.yaml` — GitHub Actions build matrix. Currently `sofle_choc_pro` only.
 
 ## Firmware workflow (jj, not git)
@@ -136,3 +139,51 @@ and explicitly declined: needs an undocumented LED-to-key wiring map for
 this exact board, a custom driver bypassing `rgb_underglow` entirely, and
 has no existing sync path to the peripheral half. Not worth it — revisit
 only if that calculus changes.
+
+## Status screens
+
+`boards/shields/nice_view_disp/` is Keebart's own fork of ZMK's fancy
+nice!view canvas UI (older LVGL API: `lv_canvas_draw_*`/`lv_img_*`, not the
+newer `lv_draw_*`/`lv_image_*` used upstream) — **not** just a hardware
+devicetree shield. Its `Kconfig.defconfig` already sets
+`CONFIG_ZMK_DISPLAY_STATUS_SCREEN_CUSTOM=y`, so this is the code that was
+actually driving the physical screen from day one (the stock ZMK built-in
+label widgets were never in use). `custom_status_screen.c` picks
+`widgets/status.c` (central) or `widgets/peripheral_status.c` (peripheral)
+via `CMakeLists.txt`, same central/peripheral split pattern as
+`rgb_layer_color`.
+
+- **Central (left)** — `widgets/status.c`: three stacked 68×68 canvases —
+  top (battery + output icon + WPM graph), middle (BT profile — a single
+  "BT n" line, originally 5 connection-state circles that ate the whole
+  canvas), bottom (layer name).
+- **Peripheral (right)** — `widgets/peripheral_status.c`: one canvas
+  (battery + split-link icon). The balloon/mountain decorative art that used
+  to sit next to it was removed — the peripheral has nothing else to show,
+  so padding the screen with random art wasn't worth keeping.
+
+**What each half can actually know** — hard split, not a layout choice:
+peripheral only ever gets its own battery level and split-link status
+(`zmk_split_bt_peripheral_is_connected()`); it never receives keymap state,
+so layer name, BT profile, WPM, and output status are central-only by
+construction (ZMK's layer/output/WPM APIs don't exist on peripheral builds).
+
+**Gotcha — don't add a competing shield for this.** A prior attempt added a
+separate local shield (`status_screen_bepo`) using stock ZMK's generic
+`zmk/display/widgets/*` (`battery_status`, `output_status`, `layer_status`,
+`wpm_status`, `peripheral_status`) with its own `CONFIG_ZMK_DISPLAY_STATUS_SCREEN_CUSTOM=y`
+and `zmk_display_status_screen()`. That fails to link: `nice_view_disp`
+already provides both, and Kconfig's `imply` on the generic widgets pulls in
+a second copy of the same symbols nice_view_disp's own widget code already
+defines (`multiple definition of 'widget_battery_status_mutex'`, etc.), plus
+two competing `zmk_display_status_screen()` definitions. **Edit
+`nice_view_disp`'s own `custom_status_screen.c`/`widgets/*.c` directly** —
+that is the real status screen, not a stand-in for it.
+
+Considered and declined: forwarding RGB underglow color to the peripheral
+screen. ZMK's `rgb_underglow` module fires no state-changed event — only
+`zmk_rgb_underglow_get_state(bool*)` (on/off, not color) exists, and it's a
+getter, not something a widget can subscribe to. Getting real color data
+onto the peripheral screen would mean patching the vendored
+`rgb_underglow.c` to add a proper event, the same class of effort as the
+host-notification idea (also declined). Not worth it for what it'd show.
