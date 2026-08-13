@@ -134,6 +134,14 @@ state and never reaches the peripheral half. `&rgb_ug` is declared
 over the split transport to both halves. This is documented ZMK behavior,
 not a workaround — confirmed against ZMK's own split-keyboard docs.
 
+**Boot-time race:** the boot color-forward runs from `SYS_INIT` at priority
+90, which is early enough that the BLE split link to the peripheral usually
+isn't up yet — that first command gets silently dropped and the peripheral
+shows whatever color it last had (visible as "right half stays blue after a
+fresh flash" until you change layers once). Fixed by also subscribing to
+`zmk_split_peripheral_status_changed` and re-applying the current layer's
+color whenever the peripheral (re)connects, not just on layer changes.
+
 True per-key color (like the original Voyager QMK `ledmap`) was considered
 and explicitly declined: needs an undocumented LED-to-key wiring map for
 this exact board, a custom driver bypassing `rgb_underglow` entirely, and

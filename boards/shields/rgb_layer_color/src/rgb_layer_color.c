@@ -13,6 +13,7 @@
 #include <zmk/behavior.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/layer_state_changed.h>
+#include <zmk/events/split_peripheral_status_changed.h>
 #include <zmk/keymap.h>
 #include <zmk/rgb_underglow.h>
 
@@ -48,25 +49,35 @@ static void rgb_layer_color_apply(struct zmk_led_hsb color) {
     zmk_behavior_invoke_binding(&binding, event, true);
 }
 
-static int rgb_layer_color_listener(const zmk_event_t *eh) {
+static void rgb_layer_color_apply_current_layer(void) {
     zmk_keymap_layer_index_t index = zmk_keymap_highest_layer_active();
 
     if (index >= ARRAY_SIZE(rgb_layer_colors)) {
-        return ZMK_EV_EVENT_BUBBLE;
+        return;
     }
 
     rgb_layer_color_apply(rgb_layer_colors[index]);
+}
+
+static int rgb_layer_color_listener(const zmk_event_t *eh) {
+    rgb_layer_color_apply_current_layer();
 
     return ZMK_EV_EVENT_BUBBLE;
 }
 
 ZMK_LISTENER(rgb_layer_color, rgb_layer_color_listener);
 ZMK_SUBSCRIPTION(rgb_layer_color, zmk_layer_state_changed);
+/* SYS_INIT fires before the split BLE link to the peripheral is up, so the
+ * boot color-forward below is silently dropped there — the peripheral keeps
+ * whatever color it last had until this fires on (re)connect. */
+ZMK_SUBSCRIPTION(rgb_layer_color, zmk_split_peripheral_status_changed);
 
-/* Seed the base-layer color at boot: layer_state_changed only fires when a
- * higher layer activates/deactivates, never for the always-active base layer. */
+/* Seed the local (central) color at boot: layer_state_changed only fires
+ * when a higher layer activates/deactivates, never for the always-active
+ * base layer. The peripheral gets its boot color from the reconnect
+ * subscription above instead, since the split link isn't up yet here. */
 static int rgb_layer_color_init(void) {
-    rgb_layer_color_apply(rgb_layer_colors[0]);
+    rgb_layer_color_apply_current_layer();
 
     return 0;
 }
