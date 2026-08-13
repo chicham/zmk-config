@@ -32,28 +32,35 @@
 
     default_layer {
       display-name = "BEPO";
-      // BEPO letters over the French-PC (AZERTY) HID mapping — same trick the
-      // Voyager QMK config used with FR_* keycodes, ported to zmk-locales' FR_* macros.
+      // BÉPO letters mapped over the French-PC (AZERTY) HID codes via
+      // zmk-locales' FR_* keycodes.
       // ------------------------------------------------------------------------------------------------------------
-      // |  /   |  \   |  [   |  ]   |  (   |  )   |                    |   ^  |   !   |   ?   |      |       | BSPC |
+      // |  /   |  \   |  [   |  ]   |  (   |  )   |                    |   ^  |   !   |   ?   |  :   |  _    | BSPC |
       // | ESC  |  B   |  É   |  P   |  O   |  È   |                    |   V  |  D    |  L    |  J    |  Z    |  W   |
       // |  TAB  |  A   |  U   |  I   |  E   |  ,   |                    |   C  |  T    |  S    |  R    |  N    |  M   |
-      // |       |  À   |  Y   |  X   |  .   |  K   | LOWER |  | RAISE  |   '  |  Q    |  G    |  H    |  F    |  Ç   |
-      //               | SHFT | CTRL | ALT   |  GUI  |  SPC  |  |  ENTER   | GUI  | ALT  | CTRL | SHFT|
-      // Reconciled with BÉPO: comma back on the home row (was ;, now on NUM
-      // instead), v/d/l/j/z/w restored to row 2 in BÉPO order, ' moved next
-      // to q (row 4, in the slot w vacated), circumflex dead-key (^, for
-      // ê/â/î/ô/û) added to row 1 — true single-key ê isn't possible over
-      // AZERTY/French-PC without switching macOS to a real BÉPO input source.
-      // ç added to the last empty row-4 key (R4C6, right).
-      // ESC stays put; SHIFT/CTRL moved off the main grid onto the thumb row.
+      // | CAPSWD|  À   |  Y   |  X   |  .   |  K   | LOWER |  | RAISE  |   '  |  Q    |  G    |  H    |  F    |  Ç   |
+      //               | GUI  | SHFT | ALT   |  CTRL |  SPC  |  |  ENTER   | LEFT | DOWN | UP   | RIGHT|
+      // Letters follow BÉPO 1.1 order; row 1 keeps custom punctuation rather
+      // than BÉPO's own row-1 symbols. Circumflex dead-key (row 1) composes
+      // ê/â/î/ô/û with the following vowel — true single-key ê needs a real
+      // BÉPO OS input source, not available over AZERTY/French-PC.
       // LOWER/RAISE live on the two extra row-4 keys below each screen.
+      // : and _ sit on the top-right — neither is derivable via Shift from
+      // anything already on BASE, and both are constant in Python.
+      // caps_word (bottom-left) types one word capitalized then
+      // auto-releases Shift.
+      // Left thumb ordered by modifier frequency, closest reach first:
+      // GUI SHIFT ALT CTRL — GUI is barely used in custom shortcuts, CTRL
+      // and ALT are the heaviest. Right thumb carries a dedicated always-on
+      // arrow cluster instead of a mirrored copy of the modifiers, so any
+      // Modifier+Arrow combo is a plain two-contact chord (one thumb per
+      // hand) with no layer-hold involved.
       bindings = <
-        &kp FR_FSLH &kp FR_BSLH    &kp FR_LBKT &kp FR_RBKT &kp FR_LPAR &kp FR_RPAR                       &kp FR_CARET &kp FR_EXCL &kp FR_QMARK &none     &none      &kp BSPC
+        &kp FR_FSLH &kp FR_BSLH    &kp FR_LBKT &kp FR_RBKT &kp FR_LPAR &kp FR_RPAR                       &kp FR_CARET &kp FR_EXCL &kp FR_QMARK &kp FR_COLON &kp FR_UNDERSCORE &kp BSPC
         &kp ESC     &kp B          &kp FR_E_ACUTE &kp P    &kp O       &kp FR_E_GRAVE                    &kp V        &kp D    &kp L     &kp J     &kp FR_Z  &kp FR_W
         &kp TAB     &kp FR_A       &kp U       &kp I       &kp E       &kp FR_COMMA                      &kp C        &kp T    &kp S     &kp R     &kp N     &kp FR_M
-        &none       &kp FR_A_GRAVE &kp Y       &kp X       &kp FR_DOT  &kp K       &mo LOWER  &mo RAISE  &kp FR_APOSTROPHE &kp FR_Q &kp G &kp H     &kp F     &kp FR_C_CEDILLA
-        &kp LSHFT &kp LCTRL &kp LALT &kp LGUI &kp SPACE     &kp RET &kp RGUI &kp RALT &kp RCTRL &kp RSHFT
+        &caps_word  &kp FR_A_GRAVE &kp Y       &kp X       &kp FR_DOT  &kp K       &mo LOWER  &mo RAISE  &kp FR_APOSTROPHE &kp FR_Q &kp G &kp H     &kp F     &kp FR_C_CEDILLA
+        &kp LGUI &kp LSHFT &kp LALT &kp LCTRL &kp SPACE     &kp RET &kp LEFT &kp DOWN &kp UP &kp RIGHT
       >;
 
       sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_PREV C_NEXT>;
@@ -66,14 +73,14 @@
       // |      |      |  [   |  ]   |  7   |  8   |                    |      |  [   |  ]   |  7   |  8   |  9   |
       // |      |      |      |      |      |      |                    |  -   |  <   |  >   |  4   |  5   |  6   |
       // |      |      |  Ù   |      |      |      |                    |      |  |   |  &   |  1   |  2   |  3   |
-      // |      |      |      |      |      |      |       |  |         |  ;   |  :   |  #   |  ~   |  0   |      |
+      // |      |      |      |      |      |      |       |  |         |  ;   |      |  #   |  ~   |  0   |      |
       //               |      |      |      |      |       |  |         |      |      |      |      |
-      // ^ and ç removed — both now live on BASE directly (no longer duplicated).
+      // ^, ç, and : live on BASE directly.
       bindings = <
         &trans &trans &trans     &trans &trans &trans                                     &trans       &kp FR_LBKT &kp FR_RBKT &kp FR_N7    &kp FR_N8    &kp FR_N9
         &trans &trans &trans     &trans &trans &trans                                     &kp FR_MINUS &kp FR_LT   &kp FR_GT   &kp FR_N4    &kp FR_N5    &kp FR_N6
         &trans &trans &kp FR_U_GRAVE &trans &trans &trans                                 &trans           &kp FR_PIPE &kp FR_AMPERSAND &kp FR_N1 &kp FR_N2 &kp FR_N3
-        &trans &trans &trans     &trans &trans &trans     &trans &trans                   &kp FR_SEMI &kp FR_COLON &kp FR_HASH &kp FR_TILDE &kp FR_N0 &trans
+        &trans &trans &trans     &trans &trans &trans     &trans &trans                   &kp FR_SEMI &trans &kp FR_HASH &kp FR_TILDE &kp FR_N0 &trans
         &trans &trans      &trans    &trans     &trans &trans  &trans    &trans   &trans    &trans
       >;
 
@@ -86,16 +93,16 @@
       // ------------------------------------------------------------------------------------------------------------
       // |  +   |  -   |  /   |  *   |  =   |  %   |                    |      |      | BRI-  | BRI+ |      | INS  |
       // |      |  $   |  "   |  (   |  )   |  @   |                    |      |      |       |      |      |      |
-      // |      |      |  _   |  ¨   |  `   |      |                    |      |      |       |      |      |      |
+      // |      |      |      |  ¨   |  `   |      |                    |      |      |       |      |      |      |
       // |      |  /   |  \   |  {   |  }   | RALT+SPC |     |  |       |      |      |       |      |      |      |
-      //               |      |      |      |      |         |  |      | LEFT | DOWN |  UP   | RIGHT|
-      // ' removed — now lives on BASE directly (no longer duplicated).
+      //               |      |      |      |      |         |  |      |      |      |       |      |
+      // ', _, and the arrow cluster live on BASE directly.
       bindings = <
         &kp FR_PLUS &kp FR_MINUS &kp FR_FSLH &kp FR_ASTRK &kp FR_EQUAL &kp FR_PERCENT                                          &trans &trans &rgb_ug RGB_BRD &rgb_ug RGB_BRI &trans &kp INS
         &trans      &kp FR_DOLLAR &kp FR_DOUBLE_QUOTES &kp FR_LPAR &kp FR_RPAR &kp FR_AT                                       &trans &trans &trans          &trans          &trans &trans
-        &trans      &trans       &kp FR_UNDERSCORE &kp FR_UMLAUT &kp FR_GRAVE &trans                                          &trans &trans &trans          &trans          &trans &trans
+        &trans      &trans       &trans &kp FR_UMLAUT &kp FR_GRAVE &trans                                          &trans &trans &trans          &trans          &trans &trans
         &trans      &kp FR_FSLH  &kp FR_BSLH &kp FR_LBRC &kp FR_RBRC &kp RA(SPACE)     &trans &trans                          &trans &trans &trans          &trans          &trans &trans
-                                  &trans      &trans      &trans      &trans            &trans &trans                        &kp LEFT &kp DOWN &kp UP &kp RIGHT
+                                  &trans      &trans      &trans      &trans            &trans &trans                        &trans &trans &trans &trans
       >;
 
       sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_PREV C_NEXT>;

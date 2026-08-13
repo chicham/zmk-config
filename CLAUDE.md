@@ -100,23 +100,49 @@ official BÉPO 1.1 spec (comma on the home row, `v d l j z w` in BÉPO order,
 apostrophe + ç on the main grid, circumflex dead-key for ê/â/î/ô/û). True
 single-key `ê` isn't reachable over AZERTY/French-PC — needs the circumflex
 dead-key + `e`, same as real AZERTY keyboards.
-Left thumb (outer→inner): `SHIFT CTRL ALT GUI SPACE`.
-Right thumb (inner→outer): `ENTER GUI ALT CTRL SHIFT`.
+
+Top-right `:` and `_` fill BASE's two previously-empty slots — both need a
+dedicated `FR_*` keycode (not derivable via Shift from anything already on
+BASE) and are constant in Python (every compound statement, every
+`snake_case` identifier); deduped off NUM/SYM once promoted here. Bottom-left
+gets `&caps_word` (types one word capitalized, then auto-releases Shift) —
+real BÉPO's row-4 first key is `ê`, still unreachable for the same AZERTY
+reason as above, so this slot got a different, genuinely useful binding
+instead.
+
+**Thumb row** — reordered by *actual* modifier usage, checked against
+AeroSpace/Zellij/nvim/fish configs rather than guessed: Ctrl and Alt are the
+heaviest-used modifiers (AeroSpace's primary window-management modifiers,
+Zellij's `Ctrl+a` leader, nvim's `<C-w>`), so they get the shortest thumb
+reach; GUI barely appears in custom shortcuts (AeroSpace avoids it
+entirely — a common tiling-WM convention to dodge system-reserved Cmd
+conflicts) so it moved to the hardest-to-reach outer slot.
+
+No longer mirrored — all 4 modifiers live solely on the left thumb:
+`GUI SHFT ALT CTRL SPACE` (outer→inner). The right thumb instead carries a
+dedicated always-on arrow cluster: `RET LEFT DOWN UP RIGHT` (inner→outer).
+This was a deliberate fix for a real problem: arrows used to live only on
+SYM's right thumb, so `Alt+Arrow` required holding SYM (an awkward
+off-home-row finger key) *and* pressing the right thumb *and* holding Alt on
+the left thumb — three contacts, two of them stacked awkwardly on one hand.
+With arrows always-on, any `Modifier+Arrow` combo is now exactly two
+contacts (one thumb per hand), no layer-hold involved.
+
 LOWER/RAISE are on the two extra row-4 keys below each screen (not on the
 thumb — moved there deliberately to free up thumb slots).
 
 **NUM** — numbers/symbols, entirely on the right hand. Left hand is mostly
-`&trans` (falls through to BASE) except `ù` (home row).
+`&trans` (falls through to BASE) except `ù` (home row). `:` removed (now on
+BASE).
 
-**SYM** — extra punctuation + RGB brightness, left hand. Right thumb has a
-dedicated arrow cluster (`LEFT DOWN UP RIGHT`) since row 1's `UP`/`DOWN`
-positions are shadowed by RGB brightness keys.
+**SYM** — extra punctuation + RGB brightness, left hand. Right thumb's old
+arrow overrides removed (`&trans` now — arrows are always-on via BASE, no
+layer-hold needed). `_` removed (now on BASE).
 
 **ADJUST** — Bluetooth profile select/clear, RGB hue/sat/effect/toggle,
 `studio_unlock` (left hand); `F1`-`F12` (right hand, rows 1-2).
 
-Known open items (not urgent): 3 bare `&none` main-grid slots (R1C4/C5
-right, R4C1 left), no Delete key, no Caps Lock, no true single-key `ê`.
+Known open items (not urgent): no Delete key, no true single-key `ê`.
 
 ## RGB per layer
 
