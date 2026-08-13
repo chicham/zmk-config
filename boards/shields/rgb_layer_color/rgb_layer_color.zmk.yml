@@ -1,0 +1,5 @@
+file_format: "1"
+id: rgb_layer_color
+name: RGB Layer Color
+type: shield
+requires: [underglow]

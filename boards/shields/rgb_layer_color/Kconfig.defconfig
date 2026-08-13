@@ -1,0 +1,9 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_RGB_LAYER_COLOR
+
+config ZMK_RGB_UNDERGLOW
+    default y
+
+endif # SHIELD_RGB_LAYER_COLOR
