@@ -67,17 +67,27 @@ static int rgb_layer_color_listener(const zmk_event_t *eh) {
 ZMK_LISTENER(rgb_layer_color, rgb_layer_color_listener);
 ZMK_SUBSCRIPTION(rgb_layer_color, zmk_layer_state_changed);
 
-/* zmk_split_peripheral_status_changed is raised only from peripheral.c
- * (peripheral-only compiled) — there is no equivalent central-side "a
- * peripheral connected" event in stock ZMK, so subscribing to it here was
- * dead code that never fired. A boot-time forward from SYS_INIT also
- * doesn't work: it runs before the split BLE link to the peripheral is up,
- * so that first command gets silently dropped and the peripheral is stuck
- * showing whatever color it last had. Instead, retry the forward a few
- * times a couple seconds apart — by then the link is reliably up, and a
- * command arriving on an already-correct peripheral is a harmless no-op. */
+/* Two independent boot races to beat here, both on every half:
+ *
+ * 1. zmk_rgb_underglow_init() (core ZMK, app/src/rgb_underglow.c) restores
+ *    the last-persisted HSB color from settings/NVS via settings_load(),
+ *    which runs *after* all SYS_INIT hooks — so it silently overwrites our
+ *    boot-time white with whatever was last saved (e.g. blue from testing
+ *    RAISE), shortly after we set it.
+ * 2. On the peripheral specifically, the split BLE link isn't up yet at
+ *    SYS_INIT time, so the very first forwarded command never arrives
+ *    there at all.
+ *
+ * zmk_split_peripheral_status_changed (a central-side subscription to
+ * "peripheral reconnected") was tried for #2 and doesn't work: that event
+ * is only ever raised from peripheral.c, a peripheral-only compiled file —
+ * there's no equivalent central-side event in stock ZMK, so it silently
+ * never fired. Retrying instead: first shortly after boot (beats the
+ * settings-restore race, which finishes well under a second), then a few
+ * times further out (covers the slower split-link race). A command
+ * reaching an already-correct half is a harmless no-op either way. */
 static struct k_work_delayable rgb_layer_color_boot_sync_work;
-static int rgb_layer_color_boot_sync_retries_left = 3;
+static int rgb_layer_color_boot_sync_retries_left = 4;
 
 static void rgb_layer_color_boot_sync_handler(struct k_work *work) {
     rgb_layer_color_apply_current_layer();
@@ -88,13 +98,10 @@ static void rgb_layer_color_boot_sync_handler(struct k_work *work) {
 }
 
 static int rgb_layer_color_init(void) {
-    /* Apply immediately too, so the central's own LEDs are correct from the
-     * first frame — this copy always lands locally regardless of the split
-     * link. Only the peripheral needs the delayed retries below. */
     rgb_layer_color_apply_current_layer();
 
     k_work_init_delayable(&rgb_layer_color_boot_sync_work, rgb_layer_color_boot_sync_handler);
-    k_work_schedule(&rgb_layer_color_boot_sync_work, K_SECONDS(2));
+    k_work_schedule(&rgb_layer_color_boot_sync_work, K_MSEC(500));
 
     return 0;
 }

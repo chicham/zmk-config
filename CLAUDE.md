@@ -134,22 +134,30 @@ state and never reaches the peripheral half. `&rgb_ug` is declared
 over the split transport to both halves. This is documented ZMK behavior,
 not a workaround — confirmed against ZMK's own split-keyboard docs.
 
-**Boot-time race:** the boot color-forward runs from `SYS_INIT` at priority
-90, which is early enough that the BLE split link to the peripheral usually
-isn't up yet — that first command gets silently dropped and the peripheral
-shows whatever color it last had (visible as "right half stays blue after a
-fresh flash").
+**Two independent boot races**, both affecting every half:
 
-First fix attempt was wrong: subscribing to `zmk_split_peripheral_status_changed`
-on the central side to re-forward on reconnect. That event is only ever
-raised from `peripheral.c`, a peripheral-only compiled file — there is no
-central-side "a peripheral connected" event in stock ZMK, so the
-subscription silently never fired (compiled fine, dead code). Actual fix:
-`rgb_layer_color_init()` applies immediately (correct for the central's own
-LEDs right away) and also schedules a `k_work_delayable` that retries the
-forward 3 times, 2 seconds apart — by the last retry the split link is
-reliably up, and a command reaching an already-correct peripheral is a
-harmless no-op.
+1. Core ZMK's `zmk_rgb_underglow_init()` (`app/src/rgb_underglow.c`)
+   restores the last-persisted HSB color from settings/NVS via
+   `settings_load()`, which runs *after* all `SYS_INIT` hooks — it silently
+   overwrites our boot-time color with whatever was last saved (e.g. blue
+   from earlier testing), a moment after we set it. Visible as "starts blue,
+   then switches to white" on every boot.
+2. On the peripheral specifically, the split BLE link isn't up yet at
+   `SYS_INIT` time, so the very first forwarded command never arrives there
+   at all — visible as "right half stays blue after a fresh flash."
+
+First fix attempt for #2 was wrong: subscribing to
+`zmk_split_peripheral_status_changed` on the central side to re-forward on
+reconnect. That event is only ever raised from `peripheral.c`, a
+peripheral-only compiled file — there is no central-side "a peripheral
+connected" event in stock ZMK, so the subscription silently never fired
+(compiled fine, dead code).
+
+Actual fix: `rgb_layer_color_init()` applies immediately, then schedules a
+`k_work_delayable` that retries the forward 4 times — first at 500ms (beats
+the settings-restore race, #1, which finishes well under a second), then
+2 seconds apart after that (covers the slower split-link race, #2). A
+command reaching an already-correct half is a harmless no-op.
 
 True per-key color (like the original Voyager QMK `ledmap`) was considered
 and explicitly declined: needs an undocumented LED-to-key wiring map for
