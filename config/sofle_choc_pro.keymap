@@ -81,13 +81,13 @@
       // |      |  $   |  "   |  (   |  )   |  @   |                    |      |      |       |      |      |      |
       // |      |      |  _   |  ¨   |  `   |  '   |                    |      |      |       |      |      |      |
       // |      |  /   |  \   |  {   |  }   | RALT+SPC |     |  |       |      |      |       |      |      |      |
-      //               |      |      |      |      |         |  |      |      |      |       |      |
+      //               |      |      |      |      |         |  |      | LEFT | DOWN |  UP   | RIGHT|
       bindings = <
         &kp FR_PLUS &kp FR_MINUS &kp FR_FSLH &kp FR_ASTRK &kp FR_EQUAL &kp FR_PERCENT                                          &trans &trans &rgb_ug RGB_BRD &rgb_ug RGB_BRI &trans &kp INS
         &trans      &kp FR_DOLLAR &kp FR_DOUBLE_QUOTES &kp FR_LPAR &kp FR_RPAR &kp FR_AT                                       &trans &trans &trans          &trans          &trans &trans
         &trans      &trans       &kp FR_UNDERSCORE &kp FR_UMLAUT &kp FR_GRAVE &kp FR_APOSTROPHE                               &trans &trans &trans          &trans          &trans &trans
         &trans      &kp FR_FSLH  &kp FR_BSLH &kp FR_LBRC &kp FR_RBRC &kp RA(SPACE)     &trans &trans                          &trans &trans &trans          &trans          &trans &trans
-                                  &trans      &trans      &trans      &trans            &trans &trans                        &trans &trans &trans          &trans
+                                  &trans      &trans      &trans      &trans            &trans &trans                        &kp LEFT &kp DOWN &kp UP &kp RIGHT
       >;
 
       sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_PREV C_NEXT>;
