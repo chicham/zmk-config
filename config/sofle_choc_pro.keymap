@@ -38,15 +38,16 @@
       // |  /   |  \   |  [   |  ]   |  (   |  )   |                    |   ?  | LEFT  | DOWN  |  UP   | RIGHT | BSPC |
       // | ESC  |  B   |  É   |  P   |  O   |  È   |                    |   !  |  V    |  D    |  L    |  J    |  Z   |
       // | SHIFT|  A   |  U   |  I   |  E   |  ;   |                    |   C  |  T    |  S    |  R    |  N    |  M   |
-      // | CTRL |  À   |  Y   |  X   |  .   |  K   |       |  |        |   W  |  Q    |  G    |  H    |  F    | ALT  |
-      //               |     |      | CTRL/TAB | LOWER/SPC |       |  | GUI/ENTER | RAISE |      |      |     |
+      // | CTRL |  À   |  Y   |  X   |  .   |  K   | LOWER |  | RAISE  |   W  |  Q    |  G    |  H    |  F    | ALT  |
+      //               |     |      | CTRL/TAB |   SPC     |       |  | GUI/ENTER |      |      |      |     |
       // Blanks have no Voyager counterpart — left as &none until we assign them together.
+      // LOWER/RAISE now live on the two extra row-4 keys below each screen.
       bindings = <
         &kp FR_FSLH &kp FR_BSLH    &kp FR_LBKT &kp FR_RBKT &kp FR_LPAR &kp FR_RPAR                       &kp FR_QMARK &kp LEFT &kp DOWN  &kp UP    &kp RIGHT &kp BSPC
         &kp ESC     &kp B          &kp FR_E_ACUTE &kp P    &kp O       &kp FR_E_GRAVE                    &kp FR_EXCL  &kp V    &kp D     &kp L     &kp J     &kp FR_Z
         &kp LSHFT   &kp FR_A       &kp U       &kp I       &kp E       &kp FR_SEMI                       &kp C        &kp T    &kp S     &kp R     &kp N     &kp FR_M
-        &kp LCTRL   &kp FR_A_GRAVE &kp Y       &kp X       &kp FR_DOT  &kp K       &none      &none      &kp FR_W     &kp FR_Q &kp G     &kp H     &kp F     &kp LALT
-        &none &none &mt LCTRL TAB &lt LOWER SPACE &none     &mt LGUI RET &mo RAISE &none &none &none
+        &kp LCTRL   &kp FR_A_GRAVE &kp Y       &kp X       &kp FR_DOT  &kp K       &mo LOWER  &mo RAISE  &kp FR_W     &kp FR_Q &kp G     &kp H     &kp F     &kp LALT
+        &none &none &mt LCTRL TAB &kp SPACE &none     &mt LGUI RET &none &none &none &none
       >;
 
       sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_PREV C_NEXT>;
