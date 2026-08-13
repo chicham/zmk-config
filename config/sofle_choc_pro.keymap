@@ -38,21 +38,22 @@
       // |  /   |  \   |  [   |  ]   |  (   |  )   |                    |   ?  | LEFT  | DOWN  |  UP   | RIGHT | BSPC |
       // | ESC  |  B   |  É   |  P   |  O   |  È   |                    |   !  |  V    |  D    |  L    |  J    |  Z   |
       // | SHIFT|  A   |  U   |  I   |  E   |  ;   |                    |   C  |  T    |  S    |  R    |  N    |  M   |
-      // | CTRL |  À   |  Y   |  X   |  .   |  K   | MUTE  |  | PLAY   |   W  |  Q    |  G    |  H    |  F    | ALT  |
-      //               | GUI | ALT  | CTRL/TAB | LOWER/SPC | ENTER |  | GUI/ENTER | RAISE | CTRL | ALT | GUI |
+      // | CTRL |  À   |  Y   |  X   |  .   |  K   |       |  |        |   W  |  Q    |  G    |  H    |  F    | ALT  |
+      //               |     |      | CTRL/TAB | LOWER/SPC |       |  | GUI/ENTER | RAISE |      |      |     |
+      // Blanks have no Voyager counterpart — left as &none until we assign them together.
       bindings = <
         &kp FR_FSLH &kp FR_BSLH    &kp FR_LBKT &kp FR_RBKT &kp FR_LPAR &kp FR_RPAR                       &kp FR_QMARK &kp LEFT &kp DOWN  &kp UP    &kp RIGHT &kp BSPC
         &kp ESC     &kp B          &kp FR_E_ACUTE &kp P    &kp O       &kp FR_E_GRAVE                    &kp FR_EXCL  &kp V    &kp D     &kp L     &kp J     &kp FR_Z
         &kp LSHFT   &kp FR_A       &kp U       &kp I       &kp E       &kp FR_SEMI                       &kp C        &kp T    &kp S     &kp R     &kp N     &kp FR_M
-        &kp LCTRL   &kp FR_A_GRAVE &kp Y       &kp X       &kp FR_DOT  &kp K       &kp C_MUTE &kp C_PLAY &kp FR_W     &kp FR_Q &kp G     &kp H     &kp F     &kp LALT
-        &kp LGUI &kp LALT &mt LCTRL TAB &lt LOWER SPACE &kp RET     &mt LGUI RET &mo RAISE &kp RCTRL &kp RALT &kp RGUI
+        &kp LCTRL   &kp FR_A_GRAVE &kp Y       &kp X       &kp FR_DOT  &kp K       &none      &none      &kp FR_W     &kp FR_Q &kp G     &kp H     &kp F     &kp LALT
+        &none &none &mt LCTRL TAB &lt LOWER SPACE &none     &mt LGUI RET &mo RAISE &none &none &none
       >;
 
       sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_PREV C_NEXT>;
     };
 
     lower_layer {
-      display-name = "lower";
+      display-name = "NUM";
       // Ported from Voyager layer 1 (numbers row + symbols).
       // ------------------------------------------------------------------------------------------------------------
       // |      |      |  [   |  ]   |  7   |  8   |                    |  ^   |  [   |  ]   |  7   |  8   |  9   |
@@ -72,7 +73,7 @@
     };
 
     raise_layer {
-      display-name = "raise";
+      display-name = "SYM";
       // Ported from Voyager layer 2 (extra punctuation + RGB brightness).
       // ------------------------------------------------------------------------------------------------------------
       // |  +   |  -   |  /   |  *   |  =   |  %   |                    |      |      | BRI-  | BRI+ |      | INS  |
@@ -98,7 +99,7 @@
       // |        | RGB_BRD | RGB_BRI |         |         |         |                  |      |      |       | STUD |       |       |
       // |        |         |         |         |         |         | RGB_TOG | |      |      |      |       |      |       |       |
       //                    |         |         |         |         |         | |      |      |      |       |      |
-      display-name = "adjust";
+      display-name = "ADJUST";
       bindings = <
         &bt BT_CLR        &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4                            &none &none &none &none &none &none
         &ext_power EP_TOG &rgb_ug RGB_HUD &rgb_ug RGB_HUI &rgb_ug RGB_SAD &rgb_ug RGB_SAI &rgb_ug RGB_EFF                         &none &none &none &none &none &none
