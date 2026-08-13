@@ -37,17 +37,17 @@
       // ------------------------------------------------------------------------------------------------------------
       // |  /   |  \   |  [   |  ]   |  (   |  )   |                    |   ?  | LEFT  | DOWN  |  UP   | RIGHT | BSPC |
       // | ESC  |  B   |  É   |  P   |  O   |  È   |                    |   !  |  V    |  D    |  L    |  J    |  Z   |
-      // |       |  A   |  U   |  I   |  E   |  ;   |                    |   C  |  T    |  S    |  R    |  N    |  M   |
+      // |  TAB  |  A   |  U   |  I   |  E   |  ;   |                    |   C  |  T    |  S    |  R    |  N    |  M   |
       // |       |  À   |  Y   |  X   |  .   |  K   | LOWER |  | RAISE  |   W  |  Q    |  G    |  H    |  F    | ALT  |
-      //               | SHFT | ALT  | CTRL  |  TAB  |  SPC  |  | GUI/ENTER |      |      |      |     |
+      //               | SHFT | ALT  | CTRL  |  GUI  |  SPC  |  | GUI/ENTER |      |      |      |     |
       // ESC stays put; SHIFT/CTRL moved off the main grid onto the thumb row.
       // LOWER/RAISE live on the two extra row-4 keys below each screen.
       bindings = <
         &kp FR_FSLH &kp FR_BSLH    &kp FR_LBKT &kp FR_RBKT &kp FR_LPAR &kp FR_RPAR                       &kp FR_QMARK &kp LEFT &kp DOWN  &kp UP    &kp RIGHT &kp BSPC
         &kp ESC     &kp B          &kp FR_E_ACUTE &kp P    &kp O       &kp FR_E_GRAVE                    &kp FR_EXCL  &kp V    &kp D     &kp L     &kp J     &kp FR_Z
-        &none       &kp FR_A       &kp U       &kp I       &kp E       &kp FR_SEMI                       &kp C        &kp T    &kp S     &kp R     &kp N     &kp FR_M
+        &kp TAB     &kp FR_A       &kp U       &kp I       &kp E       &kp FR_SEMI                       &kp C        &kp T    &kp S     &kp R     &kp N     &kp FR_M
         &none       &kp FR_A_GRAVE &kp Y       &kp X       &kp FR_DOT  &kp K       &mo LOWER  &mo RAISE  &kp FR_W     &kp FR_Q &kp G     &kp H     &kp F     &kp LALT
-        &kp LSHFT &kp LALT &kp LCTRL &kp TAB &kp SPACE     &mt LGUI RET &none &none &none &none
+        &kp LSHFT &kp LALT &kp LCTRL &kp LGUI &kp SPACE     &mt LGUI RET &none &none &none &none
       >;
 
       sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_PREV C_NEXT>;
