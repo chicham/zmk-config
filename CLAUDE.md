@@ -124,7 +124,7 @@ right, R4C1 left), no Delete key, no Caps Lock, no true single-key `ê`.
 both halves in sync:
 - BASE white · LOWER red · RAISE blue · ADJUST green
 - Brightness: `RGB_LAYER_COLOR_BRT` in
-  `boards/shields/rgb_layer_color/src/rgb_layer_color.c` (currently 15%)
+  `boards/shields/rgb_layer_color/src/rgb_layer_color.c` (currently 10%)
 
 **Must go through the `&rgb_ug` behavior, never call
 `zmk_rgb_underglow_set_hsb()` directly** — that function only updates local
@@ -138,9 +138,18 @@ not a workaround — confirmed against ZMK's own split-keyboard docs.
 90, which is early enough that the BLE split link to the peripheral usually
 isn't up yet — that first command gets silently dropped and the peripheral
 shows whatever color it last had (visible as "right half stays blue after a
-fresh flash" until you change layers once). Fixed by also subscribing to
-`zmk_split_peripheral_status_changed` and re-applying the current layer's
-color whenever the peripheral (re)connects, not just on layer changes.
+fresh flash").
+
+First fix attempt was wrong: subscribing to `zmk_split_peripheral_status_changed`
+on the central side to re-forward on reconnect. That event is only ever
+raised from `peripheral.c`, a peripheral-only compiled file — there is no
+central-side "a peripheral connected" event in stock ZMK, so the
+subscription silently never fired (compiled fine, dead code). Actual fix:
+`rgb_layer_color_init()` applies immediately (correct for the central's own
+LEDs right away) and also schedules a `k_work_delayable` that retries the
+forward 3 times, 2 seconds apart — by the last retry the split link is
+reliably up, and a command reaching an already-correct peripheral is a
+harmless no-op.
 
 True per-key color (like the original Voyager QMK `ledmap`) was considered
 and explicitly declined: needs an undocumented LED-to-key wiring map for
