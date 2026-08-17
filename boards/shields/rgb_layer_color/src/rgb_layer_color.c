@@ -17,7 +17,7 @@
 #include <zmk/rgb_underglow.h>
 
 /* Brightness kept low since the strip sits under every key. */
-#define RGB_LAYER_COLOR_BRT 10
+#define RGB_LAYER_COLOR_BRT 6
 
 /* Indices must match the layer order in config/sofle_choc_pro.keymap
  * (BASE 0, LOWER 1, RAISE 2, ADJUST 3). */
